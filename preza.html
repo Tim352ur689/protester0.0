@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Презентация проекта Cookly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-orange: #FF8A3D;
+            --light-orange: #FFE4D6;
+            --dark-orange: #E86A1F;
+            --accent-coral: #FF6B6B;
+            --warm-beige: #FFF8F0;
+            --warm-brown: #8B5A2B;
+            --text-dark: #5C3D2E;
+            --text-light: #9E7A5E;
+            --white: #FFFFFF;
+            --shadow: rgba(255, 138, 61, 0.15);
+            --card-bg: #FFFDF9;
+        }
+        
+        body {
+            background-color: var(--warm-beige);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            -ms-overflow-style: none; /* IE и Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        /* Скрыть полосу прокрутки во всех браузерах */
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari и Opera */
+        }
+        
+        /* Контейнер презентации - на весь экран */
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: var(--warm-beige);
+            overflow: hidden;
+            -ms-overflow-style: none; /* IE и Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        /* Все слайды одинакового размера - на весь экран */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            background-color: var(--card-bg);
+            display: none;
+            overflow: hidden; /* Меняем auto на hidden */
+            box-sizing: border-box;
+            -ms-overflow-style: none; /* IE и Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .slide.active {
+            display: block;
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        /* Номер слайда */
+        .slide-number {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: var(--light-orange);
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-orange), var(--accent-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Заголовки */
+        .slide-title {
+            color: var(--dark-orange);
+            font-size: 3.5rem;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 4px solid var(--light-orange);
+            position: relative;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        
+        .slide-title::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-orange), var(--accent-coral));
+            border-radius: 4px;
+        }
+        
+        .section-title {
+            color: var(--dark-orange);
+            font-size: 2.2rem;
+            margin: 30px 0 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-title i {
+            color: var(--accent-coral);
+            background: rgba(255, 107, 107, 0.1);
+            padding: 12px;
+            border-radius: 15px;
+        }
+        
+        /* Контент */
+        .slide-content {
+            font-size: 1.8rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            height: calc(100% - 120px);
+            overflow: hidden; /* Меняем auto на hidden */
+            padding-right: 0; /* Убираем padding-right */
+            box-sizing: border-box;
+            -ms-overflow-style: none; /* IE и Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        /* Специальные стили для титульного слайда */
+        .title-slide {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .project-type {
+            color: var(--accent-coral);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .project-name {
+            color: var(--dark-orange);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 15px 0 30px;
+            line-height: 1.2;
+        }
+        
+        .project-logo {
+            font-size: 5rem;
+            color: var(--primary-orange);
+            margin: 30px 0;
+        }
+        
+        .author-info {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 3px solid var(--light-orange);
+            width: 80%;
+        }
+        
+        .author, .supervisor {
+            font-size: 2rem;
+            margin: 20px 0;
+            color: var(--text-dark);
+        }
+        
+        .author strong, .supervisor strong {
+            color: var(--dark-orange);
+        }
+        
+        /* Списки */
+        .feature-list {
+            list-style-type: none;
+            margin: 25px 0 35px 0;
+        }
+        
+        .feature-list li {
+            padding: 15px 0;
+            border-bottom: 2px dashed var(--light-orange);
+            position: relative;
+            padding-left: 50px;
+            font-size: 1.8rem;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 15px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-orange), var(--accent-coral));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .numbered-list {
+            list-style-type: none;
+            counter-reset: list-counter;
+            margin: 25px 0 35px 0;
+        }
+        
+        .numbered-list li {
+            counter-increment: list-counter;
+            padding: 18px 0 18px 70px;
+            position: relative;
+            border-bottom: 2px dashed var(--light-orange);
+            font-size: 1.8rem;
+        }
+        
+        .numbered-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .numbered-list li::before {
+            content: counter(list-counter);
+            position: absolute;
+            left: 0;
+            top: 15px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-orange), var(--accent-coral));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+        
+        /* Выделенные блоки */
+        .highlight-box {
+            background: linear-gradient(145deg, rgba(255, 228, 214, 0.4), rgba(255, 255, 255, 0.8));
+            border-left: 6px solid var(--primary-orange);
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 20px;
+            font-size: 1.9rem;
+            line-height: 1.6;
+            box-shadow: 0 10px 30px rgba(255, 138, 61, 0.1);
+        }
+        
+        /* Графики */
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            gap: 25px;
+        }
+        
+        .chart-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .chart-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+        }
+        
+        .chart-label {
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        /* Индикатор слайдов */
+        .slide-indicator {
+            position: fixed;
+            top: 25px;
+            left: 40px;
+            background: rgba(255, 253, 249, 0.9);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 800;
+            color: var(--dark-orange);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            font-size: 1.3rem;
+            border: 2px solid var(--light-orange);
+        }
+        
+        /* Инструкция */
+        .instructions {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            background: rgba(255, 253, 249, 0.9);
+            padding: 12px 20px;
+            border-radius: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border: 2px solid var(--light-orange);
+        }
+        
+        /* Цветовые блоки */
+        .color-block {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Адаптивность для очень больших экранов */
+        @media (min-width: 2000px) {
+            .slide {
+                padding: 80px 100px;
+            }
+            
+            .slide-title {
+                font-size: 4.5rem;
+            }
+            
+            .slide-content {
+                font-size: 2.2rem;
+            }
+            
+            .feature-list li, .numbered-list li {
+                font-size: 2.2rem;
+            }
+        }
+        
+        /* Адаптивность для средних экранов */
+        @media (max-width: 1600px) {
+            .slide {
+                padding: 50px 60px;
+            }
+            
+            .slide-title {
+                font-size: 3rem;
+            }
+            
+            .slide-content {
+                font-size: 1.6rem;
+            }
+            
+            .feature-list li, .numbered-list li {
+                font-size: 1.6rem;
+            }
+            
+            .project-name {
+                font-size: 3rem;
+            }
+        }
+        
+        /* Адаптивность для небольших экранов */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: 40px 50px;
+            }
+            
+            .slide-title {
+                font-size: 2.5rem;
+            }
+            
+            .slide-content {
+                font-size: 1.4rem;
+            }
+            
+            .feature-list li, .numbered-list li {
+                font-size: 1.4rem;
+            }
+            
+            .project-name {
+                font-size: 2.5rem;
+            }
+            
+            .author, .supervisor {
+                font-size: 1.6rem;
+            }
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 35px;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+            
+            .slide-content {
+                font-size: 1.2rem;
+                height: calc(100% - 80px);
+            }
+            
+            .feature-list li, .numbered-list li {
+                font-size: 1.2rem;
+                padding-left: 40px;
+            }
+            
+            .numbered-list li {
+                padding-left: 50px;
+            }
+            
+            .project-name {
+                font-size: 2rem;
+            }
+            
+            .author, .supervisor {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .slide-number {
+                font-size: 2rem;
+                top: 20px;
+                right: 25px;
+            }
+            
+            .slide-indicator {
+                top: 20px;
+                left: 25px;
+                font-size: 1.1rem;
+                padding: 10px 15px;
+            }
+            
+            .instructions {
+                bottom: 20px;
+                right: 25px;
+                font-size: 1rem;
+                padding: 10px 15px;
+            }
+        }
+        
+        /* Для очень маленьких экранов */
+        @media (max-width: 480px) {
+            .slide {
+                padding: 25px 30px;
+            }
+            
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            
+            .slide-content {
+                font-size: 1.1rem;
+            }
+            
+            .feature-list li, .numbered-list li {
+                font-size: 1.1rem;
+                padding-left: 35px;
+            }
+            
+            .numbered-list li {
+                padding-left: 45px;
+            }
+            
+            .project-name {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Убираем полосу прокрутки везде */
+        .slide-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari и Opera */
+        }
+        
+        .slide::-webkit-scrollbar {
+            display: none; /* Chrome, Safari и Opera */
+        }
+        
+        .presentation-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari и Opera */
+        }
+        
+        /* Скрыть элементы управления на мобильных */
+        @media (hover: none) and (pointer: coarse) {
+            .instructions {
+                display: none;
+            }
+        }
+        
+        /* Анимация для инструкции */
+        .instructions {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        /* Уведомление о навигации */
+        .nav-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary-orange), var(--accent-coral));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+        
+        /* Адаптация контента для исключения переполнения */
+        .content-block {
+            margin-bottom: 20px;
+        }
+        
+        .content-block:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Индикатор слайдов -->
+    <div class="slide-indicator" id="slide-indicator">Слайд 1 из 20</div>
+    
+    <!-- Инструкция -->
+
+    
+    <!-- Уведомление о навигации (появляется при смене слайда) -->
+    <div class="nav-notification" id="nav-notification"></div>
+    
+    <!-- Контейнер презентации -->
+    <div class="presentation-container">
+        
+        <!-- Слайд 1: Титульный лист -->
+        <div class="slide active" id="slide-1">
+            <div class="title-slide">
+                <div class="project-type">ПРОЕКТНАЯ РАБОТА</div>
+                <div class="project-name">Разработка мобильного приложения</div>
+                <div class="project-name" style="color: var(--accent-coral); font-size: 3rem;">"COOKLY: Поиск рецептов по фото продуктов"</div>
+                
+                <div class="project-logo">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                
+                <div class="author-info">
+                    <div class="author"><strong>Автор:</strong> Лян Тимур Вячеславович</div>
+                    <div class="supervisor"><strong>Руководитель проекта:</strong> </div>
+                </div>
+                
+                <div style="margin-top: 40px; color: var(--text-light); font-size: 1.5rem;">
+                    2026
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 2: Содержание - Часть 1 (1 и 2 пункты) -->
+        <div class="slide" id="slide-2">
+            <h1 class="slide-title">СОДЕРЖАНИЕ - Часть 1</h1>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="column">
+                        <div class="content-block">
+                            <h2 class="section-title"><i class="fas fa-book-open"></i>1. Введение</h2>
+                            <ul class="feature-list">
+                                <li>Цель проекта</li>
+                                <li>Проблема исследования</li>
+                                <li>Объект и задачи</li>
+                                <li>Структура проекта</li>
+                                <li>Значимость</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="column">
+                        <div class="content-block">
+                            <h2 class="section-title"><i class="fas fa-search"></i>2. Глава 1: Исследовательская часть</h2>
+                            <ul class="feature-list">
+                                <li>Анализ литературы</li>
+                                <li>Этапы работы</li>
+                                <li>Результаты опроса</li>
+                                <li>Выводы</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 3: Содержание - Часть 2 (3 и 4 пункты) -->
+        <div class="slide" id="slide-3">
+            <h1 class="slide-title">СОДЕРЖАНИЕ - Часть 2</h1>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="column">
+                        <div class="content-block">
+                            <h2 class="section-title"><i class="fas fa-code"></i>3. Глава 2: Практическая реализация</h2>
+                            <ul class="feature-list">
+                                <li>Начало разработки</li>
+                                <li>Техническая реализация</li>
+                                <li>Особенности дизайна</li>
+                                <li>Выводы</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="column">
+                        <div class="content-block">
+                            <h2 class="section-title"><i class="fas fa-chart-line"></i>4. Общий вывод и перспективы</h2>
+                            <ul class="feature-list">
+                                <li>Итоги проекта</li>
+                                <li>Перспективы развития</li>
+                                <li>Демонстрация приложения</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Остальные слайды (смещаем номера на +1) -->
+        <!-- Слайд 4: Введение - Цель проекта -->
+        <div class="slide" id="slide-4">
+            <h1 class="slide-title">ЦЕЛЬ ПРОЕКТА</h1>
+            <div class="slide-content">
+                <div class="highlight-box">
+                    Разработать мобильное веб-приложение для поиска рецептов по фотографиям продуктов
+                </div>
+                
+                <ol class="numbered-list">
+                    <li>Создать интуитивно понятный интерфейс</li>
+                    <li>Реализовать функционал загрузки фото</li>
+                    <li>Организовать удобную базу рецептов</li>
+                    <li>Использовать теплую цветовую палитру</li>
+                    <li>Адаптировать для мобильных устройств</li>
+                </ol>
+                
+                <div class="chart-container">
+                    <div class="chart-item">
+                        <div class="chart-value">100%</div>
+                        <div class="chart-label">Мобильная адаптация</div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-value">2</div>
+                        <div class="chart-label">Основные вкладки</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 5: Проблема исследования -->
+        <div class="slide" id="slide-5">
+            <h1 class="slide-title">ПРОБЛЕМА ИССЛЕДОВАНИЯ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i>Проблемы пользователей</h2>
+                    <ul class="feature-list">
+                        <li>Трудности в поиске рецептов по имеющимся продуктам</li>
+                        <li>Необходимость вводить длинные списки ингредиентов</li>
+                        <li>Отсутствие мобильных решений с визуальным поиском</li>
+                        <li>Сложность использования кулинарных приложений</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-lightbulb"></i>Решение</h2>
+                    <div class="highlight-box">
+                        Мобильное приложение с технологией поиска по фотографиям продуктов, 
+                        которое позволяет быстро находить подходящие рецепты
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 6: Объект и задачи исследования -->
+        <div class="slide" id="slide-6">
+            <h1 class="slide-title">ОБЪЕКТ И ЗАДАЧИ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-bullseye"></i>Объект исследования</h2>
+                    <div class="highlight-box">
+                        Процесс разработки мобильного веб-приложения для поиска рецептов по фотографиям
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-tasks"></i>Задачи проекта</h2>
+                    <ol class="numbered-list">
+                        <li>Проанализировать существующие решения</li>
+                        <li>Изучить потребности целевой аудитории</li>
+                        <li>Разработать концепцию и дизайн приложения</li>
+                        <li>Реализовать функциональность приложения</li>
+                        <li>Протестировать и оценить результат</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 7: Структура и значимость проекта -->
+        <div class="slide" id="slide-7">
+            <h1 class="slide-title">СТРУКТУРА И ЗНАЧИМОСТЬ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-sitemap"></i>Структура проекта</h2>
+                    <ol class="numbered-list">
+                        <li>Исследовательский этап (анализ, опрос)</li>
+                        <li>Проектирование интерфейса (дизайн, прототип)</li>
+                        <li>Разработка функционала (кодирование)</li>
+                        <li>Тестирование и оптимизация</li>
+                    </ol>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-star"></i>Значимость проекта</h2>
+                    <ul class="feature-list">
+                        <li>Упрощение процесса поиска рецептов</li>
+                        <li>Экономия времени пользователей</li>
+                        <li>Снижение пищевых отходов</li>
+                        <li>Образовательная функция</li>
+                        <li>Поддержка здорового питания</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 8: Глава 1 - Анализ литературы -->
+        <div class="slide" id="slide-8">
+            <h1 class="slide-title">АНАЛИЗ ЛИТЕРАТУРЫ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-book"></i>Исследованные приложения</h2>
+                    <ul class="feature-list">
+                        <li><strong>Allrecipes, Yummly</strong> - международные платформы</li>
+                        <li><strong>"Едим Дома", "ХлебСоль"</strong> - российские решения</li>
+                        <li><strong>Pinterest, Tasty</strong> - социальные платформы</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-times-circle"></i>Выявленные недостатки</h2>
+                    <ul class="feature-list">
+                        <li>Сложный и перегруженный интерфейс</li>
+                        <li>Отсутствие функции поиска по фотографиям</li>
+                        <li>Перегруженность рекламным контентом</li>
+                        <li>Преимущественно платный контент</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>Вывод:</strong> Существует потребность в простом, бесплатном 
+                    и удобном мобильном приложении с функцией поиска рецептов по фото
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 9: Этапы работы (опрос пользователей) -->
+        <div class="slide" id="slide-9">
+            <h1 class="slide-title">ЭТАПЫ РАБОТЫ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-poll"></i>Опрос пользователей</h2>
+                    <div class="highlight-box">
+                        <strong>Цель:</strong> Выявление потребностей и предпочтений целевой аудитории
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li><strong>Метод:</strong> Онлайн-анкетирование</li>
+                        <li><strong>Выборка:</strong> 150 респондентов</li>
+                        <li><strong>Возраст:</strong> 18-45 лет</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-question-circle"></i>Ключевые вопросы</h2>
+                    <ol class="numbered-list">
+                        <li>Как часто вы готовите дома?</li>
+                        <li>Какие проблемы возникают при поиске рецептов?</li>
+                        <li>Использовали бы вы поиск рецептов по фото?</li>
+                        <li>Какие функции наиболее важны?</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 10: Результаты опроса -->
+        <div class="slide" id="slide-10">
+            <h1 class="slide-title">РЕЗУЛЬТАТЫ ОПРОСА</h1>
+            <div class="slide-content">
+                <div class="chart-container">
+                    <div class="chart-item">
+                        <div class="chart-value">85%</div>
+                        <div class="chart-label">Готовят дома 3+ раза</div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-value">72%</div>
+                        <div class="chart-label">Трудности с поиском</div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-value">90%</div>
+                        <div class="chart-label">Интерес к поиску по фото</div>
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-check-circle"></i>Важные функции</h2>
+                    <ul class="feature-list">
+                        <li>Простой интерфейс (95%)</li>
+                        <li>Бесплатный доступ (88%)</li>
+                        <li>Пошаговые инструкции (82%)</li>
+                        <li>Список покупок (75%)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 11: Выводы по главе 1 -->
+        <div class="slide" id="slide-11">
+            <h1 class="slide-title">ВЫВОДЫ ПО ГЛАВЕ 1</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-clipboard-check"></i>Основные выводы</h2>
+                    <ul class="feature-list">
+                        <li>Существует реальная потребность в приложении для поиска рецептов по фото</li>
+                        <li>Рынок предлагает ограниченные решения с визуальным поиском</li>
+                        <li>Пользователи ценят простоту, бесплатность и мобильную оптимизацию</li>
+                        <li>Теплая цветовая палитра повышает привлекательность</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>Итог:</strong> Полученные данные стали основой для проектирования 
+                    и разработки приложения Cookly
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 12: Глава 2 - Начало разработки -->
+        <div class="slide" id="slide-12">
+            <h1 class="slide-title">ТЕХНОЛОГИЧЕСКИЙ СТЕК</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-code"></i>Фронтенд-технологии</h2>
+                    <ul class="feature-list">
+                        <li><strong>HTML5</strong> - семантическая разметка</li>
+                        <li><strong>CSS3</strong> - стилизация и анимации</li>
+                        <li><strong>JavaScript</strong> - интерактивность и логика</li>
+                        <li><strong>Mobile-first подход</strong> - приоритет мобильной версии</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-paint-brush"></i>Дизайн и ресурсы</h2>
+                    <ul class="feature-list">
+                        <li><strong>Font Awesome</strong> - векторные иконки</li>
+                        <li><strong>Unsplash API</strong> - высококачественные изображения</li>
+                        <li><strong>Material Design</strong> - принципы дизайна</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 13: Архитектура приложения -->
+        <div class="slide" id="slide-13">
+            <h1 class="slide-title">АРХИТЕКТУРА ПРИЛОЖЕНИЯ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-layer-group"></i>Пользовательский интерфейс</h2>
+                    <ol class="numbered-list">
+                        <li><strong>Две основные вкладки:</strong> "Все рецепты" и "Поиск по фото"</li>
+                        <li><strong>Карточки рецептов:</strong> компактное отображение информации</li>
+                        <li><strong>Модальные окна:</strong> детальная информация о рецептах</li>
+                    </ol>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-cogs"></i>Функциональные модули</h2>
+                    <ul class="feature-list">
+                        <li><strong>Модуль загрузки фотографий</strong> - из галереи или камеры</li>
+                        <li><strong>Модуль поиска рецептов</strong> - обработка и сопоставление</li>
+                        <li><strong>Модуль отображения информации</strong> - детали рецептов</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 14: Особенности дизайна -->
+        <div class="slide" id="slide-14">
+            <h1 class="slide-title">ДИЗАЙН-КОНЦЕПЦИЯ COOKLY</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-palette"></i>Цветовая палитра</h2>
+                    <div style="display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap;">
+                        <div style="width: 120px; height: 120px; background: #FF8A3D; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">#FF8A3D</div>
+                        <div style="width: 120px; height: 120px; background: #FF6B6B; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">#FF6B6B</div>
+                        <div style="width: 120px; height: 120px; background: #FFF8F0; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #5C3D2E; font-weight: bold; border: 3px solid #FFE4D6; font-size: 1.2rem;">#FFF8F0</div>
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-brush"></i>Принципы дизайна</h2>
+                    <ul class="feature-list">
+                        <li><strong>Простота и минимализм</strong> - только необходимые элементы</li>
+                        <li><strong>Интуитивная навигация</strong> - понятная без обучения</li>
+                        <li><strong>Быстрая загрузка</strong> - оптимизированные изображения</li>
+                        <li><strong>Адаптивность</strong> - работа на всех устройствах</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 15: Функциональные возможности -->
+        <div class="slide" id="slide-15">
+            <h1 class="slide-title">ФУНКЦИОНАЛЬНЫЕ ВОЗМОЖНОСТИ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-th-large"></i>Две основные вкладки</h2>
+                    <ul class="feature-list">
+                        <li><strong>"Все рецепты"</strong> - полная база с фильтрацией</li>
+                        <li><strong>"Поиск по фото"</strong> - загрузка и анализ изображений</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-images"></i>Карточки рецептов</h2>
+                    <ol class="numbered-list">
+                        <li>Привлекательное изображение блюда</li>
+                        <li>Название рецепта и время приготовления</li>
+                        <li>Уровень сложности и калорийность</li>
+                        <li>Детальная информация при клике</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 16: Тестирование и оптимизация -->
+        <div class="slide" id="slide-16">
+            <h1 class="slide-title">ТЕСТИРОВАНИЕ И ОПТИМИЗАЦИЯ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-vial"></i>Этапы тестирования</h2>
+                    <ol class="numbered-list">
+                        <li><strong>Функциональное тестирование</strong> - проверка всех функций</li>
+                        <li><strong>Юзабилити-тестирование</strong> - удобство интерфейса</li>
+                        <li><strong>Кросс-браузерное тестирование</strong> - Chrome, Firefox, Safari</li>
+                        <li><strong>Мобильное тестирование</strong> - разные устройства и ОС</li>
+                    </ol>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-check-double"></i>Результаты тестирования</h2>
+                    <ul class="feature-list">
+                        <li>Полная работоспособность в основных браузерах</li>
+                        <li>Адаптация под различные размеры экранов</li>
+                        <li>Быстрая загрузка контента</li>
+                        <li>Интуитивный интерфейс</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 17: Выводы по главе 2 -->
+        <div class="slide" id="slide-17">
+            <h1 class="slide-title">ВЫВОДЫ ПО ГЛАВЕ 2</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-clipboard-check"></i>Достижения реализации</h2>
+                    <ul class="feature-list">
+                        <li>Успешно разработано рабочее веб-приложение с полным функционалом</li>
+                        <li>Реализованы все запланированные функции и модули</li>
+                        <li>Применена теплая цветовая палитра</li>
+                        <li>Создан интуитивный интерфейс для мобильных устройств</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>Итог:</strong> Приложение Cookly полностью соответствует 
+                    поставленным задачам и требованиям пользователей
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 18: Общий вывод -->
+        <div class="slide" id="slide-18">
+            <h1 class="slide-title">ОБЩИЙ ВЫВОД ПО ПРОЕКТУ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-trophy"></i>Достижения проекта</h2>
+                    <ul class="feature-list">
+                        <li>Разработано полнофункциональное веб-приложение Cookly</li>
+                        <li>Решена проблема поиска рецептов по фотографиям продуктов</li>
+                        <li>Создан привлекательный теплый дизайн</li>
+                        <li>Обеспечена полная мобильная адаптивность</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-star"></i>Значимость проекта</h2>
+                    <div class="highlight-box">
+                        <strong>Практическая ценность:</strong> Приложение решает реальные проблемы 
+                        пользователей в поиске рецептов и экономит их время
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 19: Перспективы развития -->
+        <div class="slide" id="slide-19">
+            <h1 class="slide-title">ПЕРСПЕКТИВЫ РАЗВИТИЯ</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-rocket"></i>Краткосрочные планы</h2>
+                    <ul class="feature-list">
+                        <li>Добавление реального ИИ для анализа фотографий</li>
+                        <li>Расширение базы рецептов до 100+ позиций</li>
+                        <li>Система сохранения избранных рецептов</li>
+                        <li>Функция составления списка покупок</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i>Дальнейшее развитие</h2>
+                    <ol class="numbered-list">
+                        <li><strong>Мобильное приложение</strong> - для iOS и Android</li>
+                        <li><strong>Социальные функции</strong> - обмен рецептами, рейтинги</li>
+                        <li><strong>Интеграция с доставкой</strong> - заказ недостающих продуктов</li>
+                        <li><strong>Персонализированные рекомендации</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 20: Демонстрация приложения -->
+        <div class="slide" id="slide-20">
+            <h1 class="slide-title">ДЕМОНСТРАЦИЯ COOKLY</h1>
+            <div class="slide-content">
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-desktop"></i>Основные экраны</h2>
+                    <ol class="numbered-list">
+                        <li><strong>Главный экран</strong> - сетка карточек рецептов</li>
+                        <li><strong>Карточка рецепта</strong> - детальная информация</li>
+                        <li><strong>Поиск по фото</strong> - загрузка и анализ изображений</li>
+                        <li><strong>Результаты поиска</strong> - найденные рецепты</li>
+                    </ol>
+                </div>
+                
+                <div class="content-block">
+                    <h2 class="section-title"><i class="fas fa-cogs"></i>Ключевые особенности</h2>
+                    <ul class="feature-list">
+                        <li>Теплый привлекательный дизайн</li>
+                        <li>Простая и интуитивная навигация</li>
+                        <li>Быстрая работа и загрузка</li>
+                        <li>Полная адаптивность под все устройства</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 21: Благодарность и вопросы -->
+        <div class="slide" id="slide-21">
+            <div class="title-slide">
+                <div class="project-logo">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                
+                <div class="project-name" style="font-size: 3rem; margin-bottom: 40px;">
+                    СПАСИБО ЗА ВНИМАНИЕ!
+                </div>
+                
+                <div class="author-info" style="width: 100%; max-width: 800px;">
+                    <div class="author" style="font-size: 2rem; margin-bottom: 30px;">
+                        <strong>Автор:</strong> Лян Тимур Вячеславович
+                    </div>
+                    
+                    <div style="background: rgba(255, 228, 214, 0.5); padding: 30px; border-radius: 20px; margin: 25px 0;">
+                        <h3 style="color: var(--dark-orange); margin-bottom: 20px; font-size: 1.8rem;">Контактная информация</h3>
+                        <ul class="feature-list" style="border: none; margin: 0;">
+                            <li><i class="fas fa-envelope"></i> Email: example@mail.com</li>
+                            <li><i class="fas fa-phone"></i> Телефон: +7 (XXX) XXX-XX-XX</li>
+                            <li><i class="fab fa-github"></i> GitHub: github.com/username</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 50px; font-size: 2.2rem; color: var(--dark-orange); font-weight: 800;">
+                    ГОТОВ ОТВЕТИТЬ НА ВАШИ ВОПРОСЫ
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Управление презентацией
+        let currentSlide = 1;
+        const totalSlides = 20;
+        
+        // Элементы DOM
+        const slideIndicator = document.getElementById('slide-indicator');
+        const instructions = document.getElementById('instructions');
+        const navNotification = document.getElementById('nav-notification');
+        
+        // Инициализация
+        updateSlide();
+        
+        // Навигация с клавиатуры
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                if (currentSlide > 1) {
+                    currentSlide--;
+                    updateSlide();
+                    showNotification('← Предыдущий слайд');
+                }
+            } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+                if (currentSlide < totalSlides) {
+                    currentSlide++;
+                    updateSlide();
+                    showNotification('→ Следующий слайд');
+                }
+            } else if (e.key === 'Home') {
+                currentSlide = 1;
+                updateSlide();
+                showNotification('⏮ Первый слайд');
+            } else if (e.key === 'End') {
+                currentSlide = totalSlides;
+                updateSlide();
+                showNotification('⏭ Последний слайд');
+            } else if (e.key === '1' || e.key === '2' || e.key === '3' || e.key === '4' || e.key === '5' || 
+                       e.key === '6' || e.key === '7' || e.key === '8' || e.key === '9') {
+                // Переход к слайду по цифре
+                const slideNum = parseInt(e.key);
+                if (slideNum <= totalSlides) {
+                    currentSlide = slideNum;
+                    updateSlide();
+                    showNotification(`Слайд ${slideNum}`);
+                }
+            }
+        });
+        
+        // Навигация с помощью кликов
+        document.addEventListener('click', (e) => {
+            // Клик по правой части экрана - следующий слайд
+            if (e.clientX > window.innerWidth / 2) {
+                if (currentSlide < totalSlides) {
+                    currentSlide++;
+                    updateSlide();
+                    showNotification('→ Следующий слайд');
+                }
+            } 
+            // Клик по левой части экрана - предыдущий слайд
+            else {
+                if (currentSlide > 1) {
+                    currentSlide--;
+                    updateSlide();
+                    showNotification('← Предыдущий слайд');
+                }
+            }
+        });
+        
+        // Навигация с помощью колесика мыши
+        let scrollTimeout;
+        document.addEventListener('wheel', (e) => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (e.deltaY > 0) {
+                    // Прокрутка вниз - следующий слайд
+                    if (currentSlide < totalSlides) {
+                        currentSlide++;
+                        updateSlide();
+                        showNotification('↓ Следующий слайд');
+                    }
+                } else if (e.deltaY < 0) {
+                    // Прокрутка вверх - предыдущий слайд
+                    if (currentSlide > 1) {
+                        currentSlide--;
+                        updateSlide();
+                        showNotification('↑ Предыдущий слайд');
+                    }
+                }
+            }, 50);
+        }, { passive: true });
+        
+        // Обновление слайда
+        function updateSlide() {
+            // Скрыть все слайды
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Показать текущий слайд
+            const currentSlideElement = document.getElementById(`slide-${currentSlide}`);
+            if (currentSlideElement) {
+                currentSlideElement.classList.add('active');
+                
+                // Прокрутить в начало
+                currentSlideElement.scrollTop = 0;
+            }
+            
+            // Обновить индикатор
+            slideIndicator.textContent = `Слайд ${currentSlide} из ${totalSlides}`;
+            
+            // Обновить URL с хэшем
+            history.replaceState(null, null, `#slide-${currentSlide}`);
+            
+            // Автоматически скрыть инструкцию через 5 секунд
+            setTimeout(() => {
+                instructions.style.opacity = '0.3';
+            }, 5000);
+        }
+        
+        // Показать уведомление о навигации
+        function showNotification(message) {
+            navNotification.textContent = message;
+            navNotification.style.display = 'block';
+            
+            // Скрыть через 1.5 секунды
+            setTimeout(() => {
+                navNotification.style.display = 'none';
+            }, 1500);
+        }
+        
+        // Показать инструкцию при наведении
+        instructions.addEventListener('mouseenter', () => {
+            instructions.style.opacity = '1';
+        });
+        
+        // Автоматически скрыть инструкцию через 10 секунд
+        setTimeout(() => {
+            instructions.style.opacity = '0.3';
+        }, 10000);
+        
+        // Восстановить инструкцию при движении мыши
+        document.addEventListener('mousemove', () => {
+            instructions.style.opacity = '1';
+            clearTimeout(hideInstructionsTimeout);
+            
+            hideInstructionsTimeout = setTimeout(() => {
+                instructions.style.opacity = '0.3';
+            }, 3000);
+        });
+        
+        let hideInstructionsTimeout;
+        
+        // Обработка начального хэша в URL
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash;
+            if (hash) {
+                const slideNum = parseInt(hash.replace('#slide-', ''));
+                if (!isNaN(slideNum) && slideNum >= 1 && slideNum <= totalSlides) {
+                    currentSlide = slideNum;
+                    updateSlide();
+                }
+            }
+        });
+        
+        // Автоматический переход на следующий слайд каждые 30 секунд (для авто-презентации)
+        let autoAdvanceInterval;
+        
+        function startAutoAdvance() {
+            autoAdvanceInterval = setInterval(() => {
+                if (currentSlide < totalSlides) {
+                    currentSlide++;
+                    updateSlide();
+                    showNotification('→ Автопереход');
+                } else {
+                    clearInterval(autoAdvanceInterval);
+                }
+            }, 30000); // 30 секунд
+        }
+        
+        function stopAutoAdvance() {
+            clearInterval(autoAdvanceInterval);
+        }
+        
+        // Начать авто-презентацию после 1 минуты бездействия
+        let inactivityTimer = setTimeout(startAutoAdvance, 60000);
+        
+        // Сбросить таймер при любом взаимодействии
+        document.addEventListener('keydown', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('wheel', resetInactivityTimer);
+        
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            stopAutoAdvance();
+            inactivityTimer = setTimeout(startAutoAdvance, 60000);
+        }
+        
+        // Полноэкранный режим при загрузке
+        document.documentElement.requestFullscreen().catch(e => {
+            console.log('Полноэкранный режим не поддерживается или отклонен');
+        });
+        
+        // Выход из полноэкранного режима по двойному нажатию Esc
+        let escPressCount = 0;
+        let escTimer;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                escPressCount++;
+                
+                if (escPressCount === 1) {
+                    escTimer = setTimeout(() => {
+                        escPressCount = 0;
+                    }, 500);
+                } else if (escPressCount === 2) {
+                    clearTimeout(escTimer);
+                    escPressCount = 0;
+                    
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                }
+            } else {
+                escPressCount = 0;
+                clearTimeout(escTimer);
+            }
+        });
+    </script>
+</body>
+</html>

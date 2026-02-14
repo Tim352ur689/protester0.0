@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка сервера | Cookly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+            --primary-green: #2E7D32;
+            --light-green: #E8F5E9;
+            --dark-green: #1B5E20;
+            --accent-teal: #009688;
+            --error-red: #F44336;
+        }
+        body {
+            background: linear-gradient(135deg, var(--light-green), #F5F7FA);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(46, 125, 50, 0.15);
+            animation: slideUp 0.6s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            color: var(--error-red);
+            line-height: 1;
+            margin-bottom: 20px;
+            text-shadow: 5px 5px 0 #FFEBEE;
+        }
+        .error-title {
+            font-size: 2rem;
+            color: var(--dark-green);
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #546E7A;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 150, 136, 0.3);
+        }
+        .btn i {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">500</div>
+        <h1 class="error-title">Ошибка сервера</h1>
+        <p class="error-message">Извините, на сервере произошла ошибка. Мы уже работаем над её исправлением.</p>
+        <a href="/" class="btn">
+            <i class="fas fa-home"></i>
+            Вернуться на главную
+        </a>
+    </div>
+</body>
+</html>

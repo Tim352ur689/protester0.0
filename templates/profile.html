@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Профиль | Cookly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Компактный дизайн для Android */
+        :root {
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--cool-gray);
+            padding-bottom: 20px;
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 12px;
+        }
+
+        /* Компактный хедер */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 20px;
+            padding: 20px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Аватар с возможностью загрузки */
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .profile-avatar, .profile-avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .profile-avatar-wrapper:active {
+            transform: scale(0.95);
+        }
+
+        .profile-avatar {
+            object-fit: cover;
+        }
+
+        .profile-avatar-placeholder {
+            background: linear-gradient(135deg, var(--accent-teal), var(--primary-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--accent-teal);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .profile-info-compact {
+            flex: 1;
+        }
+
+        .profile-name-compact {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        .profile-email-compact {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .badges-compact {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge-compact {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Компактная статистика */
+        .stats-grid-compact {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card-compact {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .stat-icon-compact {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--light-green), #C8E6C9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: var(--dark-green);
+            font-size: 1rem;
+        }
+
+        .stat-value-compact {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            line-height: 1.2;
+        }
+
+        .stat-label-compact {
+            color: var(--text-light);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Компактные секции */
+        .profile-section-compact {
+            background: white;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .section-header-compact {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-green);
+        }
+
+        .section-header-compact i {
+            width: 32px;
+            height: 32px;
+            background: var(--light-green);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-size: 1rem;
+        }
+
+        .section-header-compact span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        /* Компактная форма */
+        .form-group-compact {
+            margin-bottom: 14px;
+        }
+
+        .form-label-compact {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .form-input-compact {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--light-green);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .form-input-compact:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.1);
+        }
+
+        .form-input-compact:disabled {
+            background: var(--cool-gray);
+            color: var(--text-light);
+        }
+
+        /* Компактные кнопки */
+        .btn-compact {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+        }
+
+        .btn-compact:active {
+            transform: scale(0.97);
+        }
+
+        .btn-outline-compact {
+            background: transparent;
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .btn-danger-compact {
+            background: linear-gradient(135deg, #f44336, #ef5350);
+        }
+
+        /* Компактные аккаунты */
+        .accounts-list-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .account-item-compact {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--cool-gray);
+            border-radius: 12px;
+        }
+
+        .account-info-compact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .account-icon-compact {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .account-details-compact {
+            flex: 1;
+        }
+
+        .account-name-compact {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .account-status-compact {
+            font-size: 0.7rem;
+            color: var(--success-green);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .account-status-compact i.fa-times-circle {
+            color: var(--text-light);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+
+        /* Компактные рецепты */
+        .my-recipes-list-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .my-recipe-item-compact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: var(--cool-gray);
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .my-recipe-item-compact:active {
+            background: var(--light-green);
+        }
+
+        .my-recipe-img-compact {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .my-recipe-info-compact {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .my-recipe-title-compact {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .my-recipe-meta-compact {
+            display: flex;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        .my-recipe-actions-compact {
+            display: flex;
+            gap: 6px;
+        }
+
+        .my-recipe-btn-compact {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .my-recipe-btn-compact.edit:active {
+            background: var(--edit-blue);
+            color: white;
+        }
+
+        .my-recipe-btn-compact.delete:active {
+            background: #f44336;
+            color: white;
+        }
+
+        /* Кнопка назад */
+        .back-to-home-compact {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: white;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .back-to-home-compact:active {
+            transform: translateX(-3px);
+        }
+
+        /* Модальное окно для загрузки аватара */
+        .avatar-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .avatar-modal.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        .avatar-modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            width: 100%;
+            max-width: 320px;
+            animation: slideUp 0.3s;
+        }
+
+        .avatar-modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-modal-header h3 {
+            color: var(--dark-green);
+            font-size: 1.2rem;
+        }
+
+        .avatar-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .avatar-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--cool-gray);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .avatar-option:active {
+            background: var(--light-green);
+        }
+
+        .avatar-option i {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-size: 1.3rem;
+        }
+
+        .avatar-option span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .avatar-option small {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .avatar-cancel {
+            margin-top: 12px;
+            padding: 15px;
+            background: none;
+            border: 1px solid var(--cool-light);
+            border-radius: 16px;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .avatar-cancel:active {
+            background: var(--cool-gray);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Адаптация для маленьких экранов */
+        @media (max-width: 360px) {
+            .profile-header {
+                padding: 16px 12px;
+            }
+
+            .profile-avatar-wrapper {
+                width: 70px;
+                height: 70px;
+            }
+
+            .profile-name-compact {
+                font-size: 1.1rem;
+            }
+
+            .stat-value-compact {
+                font-size: 1.1rem;
+            }
+
+            .my-recipe-title-compact {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-container">
+            <!-- Компактная кнопка возврата -->
+            <a href="/" class="back-to-home-compact" id="back-to-home">
+                <i class="fas fa-arrow-left"></i>
+                <span>На главную</span>
+            </a>
+
+            <!-- Компактный профиль -->
+            <div class="profile-header">
+                <div class="profile-avatar-wrapper" id="avatar-wrapper">
+                    <img id="profile-avatar" class="profile-avatar" src="" alt="Avatar" style="display: none;">
+                    <div id="profile-avatar-placeholder" class="profile-avatar-placeholder"></div>
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <div class="profile-info-compact">
+                    <div class="profile-name-compact" id="profile-username">Загрузка...</div>
+                    <div class="profile-email-compact" id="profile-email">
+                        <i class="fas fa-envelope"></i>
+                        <span>Загрузка...</span>
+                    </div>
+                    <div class="badges-compact" id="profile-badges"></div>
+                </div>
+            </div>
+
+            <!-- Компактная статистика -->
+            <div class="stats-grid-compact">
+                <div class="stat-card-compact">
+                    <div class="stat-icon-compact">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="stat-value-compact" id="stat-recipes">0</div>
+                    <div class="stat-label-compact">Рецепты</div>
+                </div>
+                <div class="stat-card-compact">
+                    <div class="stat-icon-compact">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-value-compact" id="stat-favorites">0</div>
+                    <div class="stat-label-compact">Избранное</div>
+                </div>
+                <div class="stat-card-compact">
+                    <div class="stat-icon-compact">
+                        <i class="fas fa-carrot"></i>
+                    </div>
+                    <div class="stat-value-compact" id="stat-ingredients">0</div>
+                    <div class="stat-label-compact">Ингредиенты</div>
+                </div>
+            </div>
+
+            <!-- Компактная форма редактирования -->
+            <div class="profile-section-compact">
+                <div class="section-header-compact">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Настройки</span>
+                </div>
+
+                <form id="profile-form">
+                    <div class="form-group-compact">
+                        <label class="form-label-compact">Имя</label>
+                        <input type="text" class="form-input-compact" id="edit-username" placeholder="Ваше имя">
+                    </div>
+
+                    <div class="form-group-compact">
+                        <label class="form-label-compact">Email</label>
+                        <input type="email" class="form-input-compact" id="edit-email" disabled>
+                    </div>
+
+                    <button type="submit" class="btn-compact" id="save-profile-btn">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </form>
+            </div>
+
+            <!-- Компактные аккаунты -->
+            <div class="profile-section-compact">
+                <div class="section-header-compact">
+                    <i class="fas fa-link"></i>
+                    <span>Аккаунты</span>
+                </div>
+
+                <div class="accounts-list-compact" id="connected-accounts"></div>
+            </div>
+
+            <!-- Компактные рецепты -->
+            <div class="profile-section-compact">
+                <div class="section-header-compact">
+                    <i class="fas fa-utensils"></i>
+                    <span>Мои рецепты</span>
+                </div>
+
+                <div id="my-recipes-container" class="my-recipes-list-compact"></div>
+
+                <div style="margin-top: 12px;">
+                    <a href="/#create" class="btn-compact btn-outline-compact" style="width: 100%;">
+                        <i class="fas fa-plus"></i> Создать рецепт
+                    </a>
+                </div>
+            </div>
+
+            <!-- Компактные действия -->
+            <div class="profile-section-compact">
+                <div class="section-header-compact">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Безопасность</span>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-compact btn-outline-compact" onclick="changePassword()" style="flex: 1;">
+                        <i class="fas fa-key"></i> Пароль
+                    </button>
+                    <button class="btn-compact btn-danger-compact" onclick="logout()" style="flex: 1;">
+                        <i class="fas fa-sign-out-alt"></i> Выход
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для загрузки аватара -->
+    <div class="avatar-modal" id="avatar-modal">
+        <div class="avatar-modal-content">
+            <div class="avatar-modal-header">
+                <h3>Изменить аватар</h3>
+            </div>
+            <div class="avatar-options">
+                <div class="avatar-option" id="upload-avatar-option">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <div>
+                        <span>Загрузить фото</span><br>
+                        <small>Выберите файл с устройства</small>
+                    </div>
+                </div>
+                <div class="avatar-option" id="camera-avatar-option">
+                    <i class="fas fa-camera"></i>
+                    <div>
+                        <span>Сделать фото</span><br>
+                        <small>Использовать камеру</small>
+                    </div>
+                </div>
+                <div class="avatar-option" id="remove-avatar-option">
+                    <i class="fas fa-trash"></i>
+                    <div>
+                        <span>Удалить аватар</span><br>
+                        <small>Вернуться к стандартному</small>
+                    </div>
+                </div>
+            </div>
+            <div class="avatar-cancel" id="cancel-avatar-modal">
+                Отмена
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрытые элементы -->
+    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
+    <canvas id="avatar-canvas" style="display: none;"></canvas>
+
+    <script>
+        // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С API ==========
+
+        async function apiRequest(endpoint, method = 'GET', data = null) {
+            const url = `/api${endpoint}`;
+            const options = {
+                method,
+                headers: {}
+            };
+
+            if (data) {
+                options.headers['Content-Type'] = 'application/json';
+                options.body = JSON.stringify(data);
+            }
+
+            const response = await fetch(url, options);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || result.message || 'Ошибка запроса');
+            }
+
+            return result;
+        }
+
+        function showNotification(message, icon = 'check-circle') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3500);
+        }
+
+        // ========== ЗАГРУЗКА ДАННЫХ ПРОФИЛЯ ==========
+
+        async function loadProfile() {
+            try {
+                const userData = await apiRequest('/auth/user');
+
+                if (!userData.authenticated) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const user = userData.user;
+
+                // Заполняем информацию профиля
+                document.getElementById('profile-username').textContent = user.username;
+                document.getElementById('profile-email').querySelector('span').textContent = user.email || 'Email не указан';
+
+                // Аватар
+                updateAvatarDisplay(user.avatar, user.username);
+
+                // Заполняем форму редактирования
+                document.getElementById('edit-username').value = user.username;
+                document.getElementById('edit-email').value = user.email || '';
+
+                // Бейджи
+                const badgesContainer = document.getElementById('profile-badges');
+                badgesContainer.innerHTML = '';
+
+                if (user.is_admin) {
+                    badgesContainer.innerHTML += '<span class="badge-compact"><i class="fas fa-crown"></i> Админ</span>';
+                }
+
+                if (user.created_at) {
+                    const date = new Date(user.created_at);
+                    badgesContainer.innerHTML += `<span class="badge-compact"><i class="fas fa-calendar"></i> ${date.toLocaleDateString()}</span>`;
+                }
+
+                // Загружаем статистику
+                await loadStats();
+
+                // Загружаем привязанные аккаунты
+                await loadConnectedAccounts(user);
+
+                // Загружаем мои рецепты
+                await loadMyRecipes();
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showNotification('Ошибка загрузки профиля', 'exclamation-triangle');
+            }
+        }
+
+        function updateAvatarDisplay(avatarUrl, username) {
+            const avatarImg = document.getElementById('profile-avatar');
+            const avatarPlaceholder = document.getElementById('profile-avatar-placeholder');
+
+            if (avatarUrl && avatarUrl.trim() !== '') {
+                avatarImg.src = avatarUrl;
+                avatarImg.style.display = 'block';
+                avatarPlaceholder.style.display = 'none';
+            } else {
+                avatarPlaceholder.textContent = (username || 'U').charAt(0).toUpperCase();
+                avatarPlaceholder.style.display = 'flex';
+                avatarImg.style.display = 'none';
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const stats = await apiRequest('/profile/stats');
+
+                document.getElementById('stat-recipes').textContent = stats.recipes_count || 0;
+                document.getElementById('stat-favorites').textContent = stats.favorites_count || 0;
+                document.getElementById('stat-ingredients').textContent = stats.ingredients_count || 0;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadConnectedAccounts(user) {
+            const container = document.getElementById('connected-accounts');
+            container.innerHTML = '';
+
+            // Email аккаунт
+            const emailItem = document.createElement('div');
+            emailItem.className = 'account-item-compact';
+            emailItem.innerHTML = `
+                <div class="account-info-compact">
+                    <div class="account-icon-compact" style="background: var(--light-green); color: var(--primary-green);">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="account-details-compact">
+                        <div class="account-name-compact">Email</div>
+                        <div class="account-status-compact">
+                            <i class="fas fa-check-circle"></i>
+                            Подключен
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(emailItem);
+
+            // Google аккаунт
+            const googleItem = document.createElement('div');
+            googleItem.className = 'account-item-compact';
+            googleItem.innerHTML = `
+                <div class="account-info-compact">
+                    <div class="account-icon-compact" style="background: #FFEBEE; color: #DB4437;">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="account-details-compact">
+                        <div class="account-name-compact">Google</div>
+                        <div class="account-status-compact">
+                            <i class="fas ${user.google_id ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                            ${user.google_id ? 'Подключен' : 'Не подключен'}
+                        </div>
+                    </div>
+                </div>
+                ${!user.google_id ? '<a href="/login/google" class="btn-small btn-outline-compact" style="text-decoration: none;">Подключить</a>' : ''}
+            `;
+            container.appendChild(googleItem);
+
+            // Telegram аккаунт
+            const telegramItem = document.createElement('div');
+            telegramItem.className = 'account-item-compact';
+            telegramItem.innerHTML = `
+                <div class="account-info-compact">
+                    <div class="account-icon-compact" style="background: #E3F2FD; color: #0088cc;">
+                        <i class="fab fa-telegram-plane"></i>
+                    </div>
+                    <div class="account-details-compact">
+                        <div class="account-name-compact">Telegram</div>
+                        <div class="account-status-compact">
+                            <i class="fas ${user.telegram_id ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                            ${user.telegram_id ? 'Подключен' : 'Не подключен'}
+                        </div>
+                    </div>
+                </div>
+                ${!user.telegram_id ? '<button class="btn-small btn-outline-compact" onclick="connectTelegram()">Подключить</button>' : ''}
+            `;
+            container.appendChild(telegramItem);
+        }
+
+        async function loadMyRecipes() {
+            try {
+                const recipes = await apiRequest('/user-recipes');
+                const container = document.getElementById('my-recipes-container');
+
+                if (recipes.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 24px; color: var(--text-light);">
+                            <i class="fas fa-utensils" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
+                            <p style="font-size: 0.9rem;">Нет своих рецептов</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                recipes.slice(0, 3).forEach(recipe => {
+                    const item = document.createElement('div');
+                    item.className = 'my-recipe-item-compact';
+                    item.innerHTML = `
+                        <img src="${recipe.image}" alt="${recipe.title}" class="my-recipe-img-compact" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c'">
+                        <div class="my-recipe-info-compact">
+                            <div class="my-recipe-title-compact">${recipe.title}</div>
+                            <div class="my-recipe-meta-compact">
+                                <span><i class="far fa-clock"></i> ${recipe.time}</span>
+                                <span><i class="fas fa-fire"></i> ${recipe.calories}</span>
+                            </div>
+                        </div>
+                        <div class="my-recipe-actions-compact">
+                            <button class="my-recipe-btn-compact edit" onclick="editRecipe(${recipe.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="my-recipe-btn-compact delete" onclick="deleteRecipe(${recipe.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+
+                if (recipes.length > 3) {
+                    const showMore = document.createElement('div');
+                    showMore.style.marginTop = '10px';
+                    showMore.innerHTML = '<a href="/#my-recipes" class="btn-outline-compact btn-small" style="display: block; text-align: center;">Ещё рецепты</a>';
+                    container.appendChild(showMore);
+                }
+
+            } catch (error) {
+                console.error('Error loading my recipes:', error);
+            }
+        }
+
+        // ========== ЗАГРУЗКА АВАТАРА ==========
+
+        const avatarWrapper = document.getElementById('avatar-wrapper');
+        const avatarModal = document.getElementById('avatar-modal');
+        const cancelModal = document.getElementById('cancel-avatar-modal');
+        const uploadOption = document.getElementById('upload-avatar-option');
+        const cameraOption = document.getElementById('camera-avatar-option');
+        const removeOption = document.getElementById('remove-avatar-option');
+        const fileInput = document.getElementById('avatar-file-input');
+        const canvas = document.getElementById('avatar-canvas');
+
+        avatarWrapper.addEventListener('click', () => {
+            avatarModal.classList.add('active');
+        });
+
+        cancelModal.addEventListener('click', () => {
+            avatarModal.classList.remove('active');
+        });
+
+        avatarModal.addEventListener('click', (e) => {
+            if (e.target === avatarModal) {
+                avatarModal.classList.remove('active');
+            }
+        });
+
+        // Загрузка файла
+        uploadOption.addEventListener('click', () => {
+            avatarModal.classList.remove('active');
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification('Файл слишком большой (макс 5MB)', 'exclamation-triangle');
+                    return;
+                }
+
+                if (!file.type.match('image.*')) {
+                    showNotification('Пожалуйста, выберите изображение', 'exclamation-triangle');
+                    return;
+                }
+
+                await uploadAvatar(file);
+            }
+        });
+
+        // Съемка фото
+        cameraOption.addEventListener('click', async () => {
+            avatarModal.classList.remove('active');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user' }
+                });
+
+                // Создаем модальное окно для камеры
+                const cameraModal = document.createElement('div');
+                cameraModal.style.position = 'fixed';
+                cameraModal.style.top = '0';
+                cameraModal.style.left = '0';
+                cameraModal.style.right = '0';
+                cameraModal.style.bottom = '0';
+                cameraModal.style.background = 'rgba(0,0,0,0.9)';
+                cameraModal.style.zIndex = '10001';
+                cameraModal.style.display = 'flex';
+                cameraModal.style.flexDirection = 'column';
+                cameraModal.style.alignItems = 'center';
+                cameraModal.style.justifyContent = 'center';
+                cameraModal.style.padding = '16px';
+
+                const video = document.createElement('video');
+                video.autoplay = true;
+                video.playsinline = true;
+                video.style.maxWidth = '100%';
+                video.style.maxHeight = '70vh';
+                video.style.borderRadius = '20px';
+                video.style.transform = 'scaleX(-1)';
+
+                const controls = document.createElement('div');
+                controls.style.marginTop = '20px';
+                controls.style.display = 'flex';
+                controls.style.gap = '20px';
+
+                const captureBtn = document.createElement('button');
+                captureBtn.innerHTML = '<i class="fas fa-circle"></i>';
+                captureBtn.style.width = '70px';
+                captureBtn.style.height = '70px';
+                captureBtn.style.borderRadius = '50%';
+                captureBtn.style.background = 'white';
+                captureBtn.style.border = '4px solid var(--accent-teal)';
+                captureBtn.style.color = 'var(--accent-teal)';
+                captureBtn.style.fontSize = '1.8rem';
+                captureBtn.style.cursor = 'pointer';
+
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                closeBtn.style.width = '50px';
+                closeBtn.style.height = '50px';
+                closeBtn.style.borderRadius = '50%';
+                closeBtn.style.background = 'rgba(255,255,255,0.2)';
+                closeBtn.style.border = '2px solid white';
+                closeBtn.style.color = 'white';
+                closeBtn.style.fontSize = '1.2rem';
+                closeBtn.style.cursor = 'pointer';
+
+                controls.appendChild(captureBtn);
+                controls.appendChild(closeBtn);
+
+                cameraModal.appendChild(video);
+                cameraModal.appendChild(controls);
+                document.body.appendChild(cameraModal);
+
+                video.srcObject = stream;
+
+                closeBtn.onclick = () => {
+                    stream.getTracks().forEach(track => track.stop());
+                    document.body.removeChild(cameraModal);
+                };
+
+                captureBtn.onclick = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob((blob) => {
+                        const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+
+                        stream.getTracks().forEach(track => track.stop());
+                        document.body.removeChild(cameraModal);
+
+                        uploadAvatar(file);
+                    }, 'image/jpeg', 0.9);
+                };
+
+            } catch (error) {
+                console.error('Camera error:', error);
+                showNotification('Не удалось получить доступ к камере', 'exclamation-triangle');
+            }
+        });
+
+        // Удаление аватара
+        removeOption.addEventListener('click', async () => {
+            avatarModal.classList.remove('active');
+
+            try {
+                const result = await apiRequest('/profile', 'PUT', { avatar: '' });
+
+                if (result.success) {
+                    updateAvatarDisplay('', document.getElementById('edit-username').value);
+                    showNotification('Аватар удален', 'check-circle');
+                }
+            } catch (error) {
+                console.error('Error removing avatar:', error);
+                showNotification('Ошибка удаления аватара', 'exclamation-triangle');
+            }
+        });
+
+        async function uploadAvatar(file) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const result = await apiRequest('/profile', 'PUT', {
+                        avatar: e.target.result
+                    });
+
+                    if (result.success) {
+                        updateAvatarDisplay(e.target.result, document.getElementById('edit-username').value);
+                        showNotification('Аватар обновлен', 'check-circle');
+                    }
+                } catch (error) {
+                    console.error('Error uploading avatar:', error);
+                    showNotification('Ошибка загрузки аватара', 'exclamation-triangle');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ========== ДЕЙСТВИЯ С ПРОФИЛЕМ ==========
+
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('save-profile-btn');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<div class="loading"></div>';
+            saveBtn.disabled = true;
+
+            try {
+                const username = document.getElementById('edit-username').value.trim();
+
+                const updateData = {};
+                if (username) updateData.username = username;
+
+                const result = await apiRequest('/profile', 'PUT', updateData);
+
+                if (result.success) {
+                    showNotification('Профиль обновлен', 'check-circle');
+                    await loadProfile();
+                }
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotification('Ошибка обновления профиля', 'exclamation-triangle');
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        });
+
+        async function logout() {
+            try {
+                await apiRequest('/auth/logout', 'POST');
+                showNotification('Выход выполнен', 'check-circle');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+
+        function changePassword() {
+            showNotification('Функция будет доступна скоро', 'info-circle');
+        }
+
+        function connectTelegram() {
+            showNotification('Функция будет доступна скоро', 'info-circle');
+        }
+
+        function editRecipe(recipeId) {
+            window.location.href = `/#edit-recipe-${recipeId}`;
+        }
+
+        async function deleteRecipe(recipeId) {
+            if (!confirm('Удалить рецепт?')) return;
+
+            try {
+                const result = await apiRequest(`/user-recipes/${recipeId}`, 'DELETE');
+
+                if (result.success) {
+                    showNotification('Рецепт удален', 'trash');
+                    await loadMyRecipes();
+                    await loadStats();
+                }
+            } catch (error) {
+                console.error('Error deleting recipe:', error);
+                showNotification('Ошибка удаления', 'exclamation-triangle');
+            }
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</body>
+</html>
